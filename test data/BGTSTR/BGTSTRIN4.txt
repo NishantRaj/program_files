@@ -1,0 +1,11 @@
+5
+bababababab
+5
+abcabcabcabc
+5
+bababbabab
+2
+babbabbabbab
+1
+aabbaabbaabbaabb
+4
