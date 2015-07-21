@@ -14,7 +14,7 @@ Time :- 20 July 2015 (Monday) 15:07
 #define mp make_pair
 #define mod 1000000009
 #define MAX 100009
-int SA[100009] , rank_arr[100009][20];
+int SA[100009] , rank_arr[20][100009];
 using namespace std;
 class node{
 public:
