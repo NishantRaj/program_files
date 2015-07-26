@@ -1,116 +1,238 @@
 #include <bits/stdc++.h>
 using namespace std;
-const int MAX = 500009;
-char str[MAX];
-int c[MAX];
-#define GetI() (SA12[t] < n0 ? SA12[t] * 3 + 1 : (SA12[t] - n0) * 3 + 2)
-inline bool leq(int a1, int a2, int b1, int b2) {
-        return(a1 < b1 || (a1 == b1 && a2 <= b2)); 
+int gcd(int a , int b){
+    return b == 0 ? a : gcd(b , a%b);
 }
-inline bool leq(int a1, int a2, int a3, int b1, int b2, int b3) {
-        return(a1 < b1 || (a1 == b1 && leq(a2,a3, b2,b3)));
+int lower(vector<int > A , int key){
+    int len = A.size();
+    int low = 0 , high = len , mid;
+    while(low < high){
+        mid = (low+high)>>1;
+        if(key <= A[mid])
+            high = mid;
+        else
+            low = mid+1;
+    }
+    return high;
 }
-static void radixPass(int* a, int* b, int* r, int n, int K) {
-        int i, sum, t;
-        for(i = 0;  i <= K;  i++) c[i] = 0;
-        for(i = 0;  i < n;  i++) c[r[a[i]]]++;
-        for(i = 0, sum = 0;  i <= K;  i++) {
-                t = c[i];
-                c[i] = sum;
-                sum += t;
-        }
-        for(i = 0;  i < n;  i++) b[c[r[a[i]]]++] = a[i];
+int upper(vector<int > A , int key){
+    int len = A.size();
+    int low = 0 , high = len , mid;
+    while(low < high){
+        mid = (low+high)>>1;
+        if(A[mid] > key)
+            high = mid;
+        else
+            low = mid+1;
+    }
+    return low;
 }
-void suffixArray(int* s, int* SA, int n, int K) {
-        int n0 = (n+2)/3, n1 = (n+1)/3, n2 = n/3, n02 = n0+n2;
-        int* s12 = new int[n02 + 3];
-        int* SA12 = new int[n02 + 3];
-        int* s0 = new int[n0];
-        int* SA0 = new int[n0];
-        int i, j, name, c0, c1, c2, p, t, k;
-        s12[n02] = s12[n02+1] = s12[n02+2] = 0;
-        SA12[n02] = SA12[n02+1] = SA12[n02+2] = 0;
-        for(i=0, j=0; i < n+(n0-n1); i++) if(i%3 != 0) s12[j++] = i;
-        radixPass(s12, SA12, s+2, n02, K);
-        radixPass(SA12, s12, s+1, n02, K);
-        radixPass(s12, SA12, s, n02, K);
-        name = 0, c0 = -1, c1 = -1, c2 = -1;
-        for(i = 0; i < n02; i++) {
-                if(s[SA12[i]] != c0 || s[SA12[i]+1] != c1 || s[SA12[i]+2] != c2) {
-                        name++;
-                        c0 = s[SA12[i]];
-                        c1 = s[SA12[i]+1];
-                        c2 = s[SA12[i]+2];
-                }
-                if(SA12[i] % 3 == 1) s12[SA12[i]/3] = name;
-                else s12[SA12[i]/3 + n0] = name;
-        }
-        if(name < n02) {
-                suffixArray(s12, SA12, n02, name);
-                for(i = 0; i < n02; i++) s12[SA12[i]] = i + 1;
-        }
-        else for(i = 0; i < n02; i++) SA12[s12[i] - 1] = i;
-        for(i=0, j=0; i < n02; i++) if(SA12[i] < n0) s0[j++] = 3*SA12[i];
-        radixPass(s0, SA0, s, n0, K);
-        for(p=0, t=n0-n1, k=0; k < n; k++) {
-                i = GetI();
-                j = SA0[p];
-                if(SA12[t] < n0 ? leq(s[i], s12[SA12[t] + n0], s[j], s12[j/3]) : leq(s[i], s[i+1], s12[SA12[t]-n0+1], s[j], s[j+1], s12[j/3+n0])) {
-                        SA[k] = i; t++;
-                        if(t == n02) for(k++; p < n0; p++, k++) SA[k] = SA0[p];
-                }
-                else {
-                        SA[k] = j; p++;
-                        if(p == n0) for(k++; t < n02; t++, k++) SA[k] = GetI();
-                }
-        }
-        delete[] s12; delete[] SA12; delete[] SA0; delete[] s0;
-}
-int s[MAX], SA[MAX];
-int lcp[MAX] , cum[MAX];
-void ter(char s[],int sa[],int n)
+int count(vector<int > arr,int k,int n)
 {
-        int k=0,sum = 0;
-        vector<int> rank(n,0);
-        for(int i=0; i<n; i++) rank[sa[i]]=i;
-                lcp[0] = 0;
-        for(int i=0; i<n; i++, k?k--:0)
-        {
-                if(rank[i]==n-1) {k=0; continue;}
-                int j=sa[rank[i]+1];
-                while(i+k<n && j+k<n && s[i+k]==s[j+k]) k++;
-                lcp[rank[i] + 1] = k;
-        }
+    int p=-1,q = -1;
+    for(int a = n ; a>0 ; a/=2){
+        while(p+a < n && arr[p+a] < k) p+=a;
+        while(q+a < n && arr[q+a] <= k) q+=a;
+    }
+    cout<<q<<" "<<p<<endl;
+    return (q-p);
 }
-int main() {
-        int n, m, i;
-        scanf("%s",str);
-        m = -1;
-        for(i = 0; str[i]; i++) {
-                s[i] = str[i];
-                m = m > str[i]? m : str[i];
-        }
-        n = i;
-        for(i = n; i < n+3; i++) SA[i] = s[i] = 0;
-        suffixArray(s, SA, n, m);
-        ter(str,SA,n);
-        cum[0] = n - SA[0];
-        for(int i = 1;i < n;i++){
-                cum[i] = cum[i-1] + (n - SA[i] - lcp[i]);
-        }
-        int q;
-        scanf("%d",&q);
-        while(q--)
-        {
-                int a ;
-                scanf("%d",&a);
-                int pos = lower_bound(cum,cum+n,a)- cum;
-                int i , j;
-                for(i = SA[pos] ,j = 0 ; j <  lcp[pos] ; j++ , i++)
-                        printf("%c",s[i]);
-                for(int j = 0 ; j< a - cum[pos-1] ; j++,i++)
-                        printf("%c",s[i]);
-                printf("\n");
-        }
-        return 0;
+// bool check(int A , vector<int> v , long long mid){
+//     int paint_count =0 , n = v.size() , i = 0;
+//     long long count = 0 , tot = 1;
+//     while(i < n)
+//     {
+//         if((long long)v[i] > mid)
+//             return false;
+//         if(count + (long long )v[i] > mid){
+//             tot++;
+//             count = 0;
+//         }
+//         if(count <= mid){
+//             count += (long long)v[i];
+//             i++;
+//         }
+//     }
+//     if(tot <= A)
+//         return true;
+//     return false;
+// }
+int search_(vector<int> a){
+    int len = a.size();
+    int low = 0 , high = len-1  , mid;
+    cout<<low<<" "<<high<<endl;
+    while(low < high){
+        mid = (low+high)>>1;
+        int next = (mid+1)%len;
+        int prev = (mid + len - 1)%len;
+        if(a[low] <= a[high])
+            return low;
+        if(a[mid] <= a[next]&& a[mid] <= a[prev])
+            return mid;
+        if(a[mid] <= a[high])
+            high = mid;
+        else if(a[mid] >= a[low])
+            low = mid+1;
+    }
+    return low;
 }
+int search_num(vector<int> a , int low , int high , int key){
+    int mid;
+    while(low < high){
+        mid = (low + high)>>1;
+        if(a[mid] == key)
+            return mid;
+        if(a[mid]>key)
+            high = mid;
+        else
+            low = mid+1;
+    }
+    return -1;
+}
+int i= 0;
+bool digit(string s){
+    cout<<"digit "<<s[i]<<endl;
+    if(i == s.size())
+        return true;
+    if(isdigit(s[i])){
+        i++;
+        if(digit(s))
+            return true;
+        else
+            return false;
+    }
+    if(s[i] == ' '){
+        i++;
+        if(digit(s))
+            return true;
+        else
+            return false;
+    }
+    return false;
+}
+bool R(string s){
+    cout<<"R "<<s[i]<<endl;
+    int save = i;
+    if(i == s.size())
+        return false;
+    if(s[i] == '+' || s[i] == '-'){
+        i++;
+        if(digit(s))
+            return true;
+        else
+            return false;
+    }
+    if(digit(s))
+        return true;
+    return false;
+}
+bool Q(string s){
+    cout<<"Q "<<s[i]<<endl;
+    int save = i;
+    if(isdigit(s[i])){
+        i++;
+        if(Q(s))
+            return true;
+        else
+            return false;
+    }
+    i = save;
+    if(s[i] == 'e'){
+        i++;
+        if(R(s))
+            return true;
+        else
+            return false;
+    }
+    i = save;
+    if(s[i] == ' ')
+        if(digit(s))
+            return true;
+        else
+            return false;
+    if(i == s.size())
+        return true;
+    return false;
+}
+bool T(string s){
+    cout<<"T "<<s[i]<<endl;
+    int save = i;
+    if(isdigit(s[i])){
+        i++;
+        if(T(s))
+            return true;
+        else
+            return false;
+    }
+    i = save;
+    if(s[i] == '.'){
+        i++;
+        if(isdigit(s[i])){
+            i++;
+            if(Q(s))
+                return true;
+            else return false;
+        } else return false;
+    }
+    i = save;
+    if(s[i] == 'e'){
+        i++;
+        if(R(s))
+            return true;
+        else
+            return false;
+    }
+    if(i == s.size())
+        return true;
+    else
+        return false;
+}
+bool P(string s){
+    cout<<"P "<<s[i]<<endl;
+    int save = i;
+    if(s[i] == '+' || s[i] == '-'){
+        i++;
+        if(isdigit(s[i]) || s[i] == '.')
+            if(P(s))
+                return true;
+        return false;
+    }
+    i = save;
+    if(s[i] == '.'){
+        i++;
+        if(isdigit(s[i])){
+            i++;
+            if(Q(s))
+                return true;
+            else return false;
+        } else return false;
+    }
+    i = save;
+    if(isdigit(s[i])){
+        i++;
+        if(T(s))
+            return true;
+        else
+            return false;
+    }
+    if(i == s.size())
+        return true;
+    else
+        return false;
+}
+int main(){
+    string A = "32467826570812365702673647926314796457921365792637946579269236594265794625762375621765476592146926410592659021465904652.687236478235187653874637824647856428756387264578245676579032657906097542609  ";
+    // cin>>A;
+    regex digit("(\\+|-)?[[:digit:]]+");
+    regex decimal("((\\+|-)?([[:digit:]]+)?)(\\.(([[:digit:]]+)))?");
+    regex exponent ("(((\\+|-)?(([[:digit:]]+)|((([[:digit:]]+)?)(\\.(([[:digit:]]+)))))))((e)((\\+|-)?)[[:digit:]]+)?");
+    // if(regex_match(A , exponent))
+    //     cout<<A<<endl;
+    // else
+    //     cout<<"No";
+    if(P(A))
+        cout<<A<<endl;
+    else
+        cout<<"No\n";
+}
+// ("((\\+|-)?[[:digit:]]+)(\\.(([[:digit:]]+)?))?((e|E)((\\+|-)?)[[:digit:]]+)?")

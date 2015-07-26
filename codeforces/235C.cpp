@@ -10,7 +10,7 @@ Time :- 21 July 2015 (Tuesday) 15:27
 #include <bits/stdc++.h>
 using namespace std;
 #define MAX 1000009
-int SA[1000009] , rank_array[22][1000009] , lcp[1000009];
+int SA[1000009] , rank_array[22][1000009];
 struct node{
     int left , right , pos;
 };
@@ -72,49 +72,44 @@ void suffixArray(char str[] , int n)
         SA[rank_array[pos][i]]  = i;
 }
 int search_l(char patt[] , char text[] , int len){
-	int patt_len = strlen(patt);
-	int low = 0 , high = len , mid;
-	while(low < high){
-		mid = (low+high)>>1;
-		int res = strncmp(patt , text+SA[mid] , patt_len);
-		if(res <= 0)
-			high = mid;
-		else
-			low = mid+1;
-		// cout<<patt<< " " << text+SA[mid]<< " "<<res<<" "<<low<<" "<<high<<" "<<mid<<endl;
-	}
-	// cout<<high<<endl;
-	return high;
+    int patt_len = strlen(patt);
+    int low = 0 , high = len , mid;
+    while(low < high){
+        mid = (low+high)>>1;
+        int res = strncmp(patt , text+SA[mid] , patt_len);
+        if(res <= 0)
+            high = mid;
+        else
+            low = mid+1;
+    }
+    return high;
 }
 int search_h(char patt[] , char text[] , int len){
-	int patt_len = strlen(patt);
-	int low = 0 , high = len , mid;
-	bool flag = false;
-	while(low < high){
-		mid = (low+high)>>1;
-		int res = strncmp(patt , text+SA[mid] , patt_len);
-		if(res == 0)
-			flag = true;
-		if(res < 0)
-			high = mid;
-		else
-			low = mid+1;
-		// cout<<patt<< " " << text+SA[mid]<< " "<<res<<" "<<low<<" "<<high<<" "<<mid<<endl;
-	}
-	// cout<<low<<" "<<flag<<endl;
-	if(low == len-1 && flag)
-		low++;
-	return low;
+    int patt_len = strlen(patt);
+    int low = 0 , high = len , mid;
+    while(low < high){
+        mid = (low+high)>>1;
+        int res = strncmp(patt , text+SA[mid] , patt_len);
+        if(res < 0)
+            high = mid;
+        else
+            low = mid+1;
+    }
+    return low;
 }
+
 char s[1000009];
 int main()
 {
-    scanf("%s" , s);
+    // scanf("%s" , s);
+    ios::sync_with_stdio(false);
+    cin>>s;
     int n = strlen(s);
+    s[n++] = char(123);
     suffixArray(s , n);
     // for(int i = 0 ; i<n ; i++)
     // {
-    // 	cout<<i<<" ";
+    //  cout<<i<<" ";
     //     for(int j = SA[i];j<n;j++)
     //         cout<<s[j];
     //     cout<<" "<<SA[i];
@@ -123,20 +118,20 @@ int main()
     int q;
     cin>>q;
     while(q--){
-    	string patt , temp;
-    	cin>>patt;
-    	int count = 0;
-    	count = search_h(&patt[0] , s , n) - search_l(&patt[0] , s , n);
-    	// cout<<patt<<" "<<search_l(&patt[0] , s , n)<< " " <<search_h(&patt[0] , s , n)<<endl;
-    	for(int i = 1 ; i < patt.size() ; i++){
-    		temp = patt.substr(i , n-i)+patt.substr(0 , i);
-    		// cout<<temp<< " " << patt<< " " <<search_l(&temp[0] , s , n)<< " " << search_h(&temp[0] , s , n)<<endl;
-    		if(temp != patt){
-    			count += search_h(&temp[0] , s , n) - search_l(&temp[0] , s , n);
-    		} else
-    			break;
-    	}
-    	cout<<count<<endl;
+        string patt , temp;
+        cin>>patt;
+        int count = 0;
+        count += search_h(&patt[0] , s , n) - search_l(&patt[0] , s , n);
+        // cout<<patt<<" "<<search_l(&patt[0] , s , n)<< " " <<search_h(&patt[0] , s , n)<<endl;
+        for(int i = 1 ; i < patt.size() ; i++){
+            temp = patt.substr(i , n-i)+patt.substr(0 , i);
+            // cout<<temp<< " " << patt<< " " <<search_l(&temp[0] , s , n)<< " " << search_h(&temp[0] , s , n)<<endl;
+            if(temp != patt){
+                count += search_h(&temp[0] , s , n) - search_l(&temp[0] , s , n);
+            } else
+                break;
+        }
+        cout<<count<<endl;
     }
     return 0;
 }
