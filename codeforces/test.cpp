@@ -696,10 +696,89 @@ string longest_palindrome(string s){
     // cout<<pos<<" "<<ans<<endl;
     return s.substr((pos - 1  - ans)/2 , ans);
 }
+int erase_val(vector<int> A){
+    if(A.size() <=1){
+        return A.size();
+    }
+    auto i =A.begin()+1, j = A.begin() ;
+    int count=0;
+    while(i!= A.end()){
+        cout<<*j<<" "<<*i<<endl;
+        if(*i == *j){
+            // cout<<*i<<" ";
+            i++;
+            count++;
+        }
+        else
+        {
+            // cout<<*j<<" "<<count<<endl;
+            auto save = i;
+            A.erase(j , j+count);
+            count = 0;
+            j = save;
+            // cout<<*j<<" "<<*i<<endl;
+            // i++;
+        }
+    }
+    for(int i = 0 ; i < A.size() ; i++)
+        cout<<A[i]<<" ";
+    // cout<<endl;
+    return A.size();
+}
+bool braces(string A){
+    stack<char> s;
+    for(int i = 0 ; i < A.length() ; i++){
+        if(A[i] == ')'){
+            if(s.top() == '(')
+                return true;
+            else{
+                while(!s.empty() && s.top()!= '('){
+                    cout<<s.top()<<endl;
+                    s.pop();
+                }
+                cout<<s.top()<<endl;
+                s.pop();
+            }
+        }
+        else
+            s.push(A[i]);
+    }
+    return false;
+}
 int main(){
+    // int n;
+    // cin>>n;
+    // std::vector<int> A;
     string s;
     cin>>s;
-    cout<<longest_palindrome(s)<<endl;
+    cout<<braces(s)<<endl;
+    // for(int i = 0 ; i < n ; i++){
+    //     int temp;
+    //     cin>>temp;
+    //     A.push_back(temp);
+    // }
+    // int i = 0 , k =0 , min = INT_MAX;
+    // long long ans = 0;
+    // for(i = 0 ; i <A.size() ; ){
+    //     while(k < A.size() && A[k] <= A[i]){
+    //         k++;
+    //         mi = min()
+    //     }
+    //     if(k != A.size())
+    //         ans = max(ans, (long long)(k-i)*A[i]);
+    //     // cout<<i<<" "<<k<<" "<<ans<<endl;
+    //     i = k;
+    // }
+    // for(int i = A.size() -1 ; i>=0 ; ){
+    //     while(k >=0 && A[k] <= A[i])
+    //         k--;
+    //     if(k!=-1)
+    //         ans = max(ans , (long long )(i-k+1)*A[i]);
+    //     // cout<<i<<" "<<k<<" "<<ans<<endl;
+    //     i = k;
+    // }
+    // cout<<ans<<endl;
+    // cout<<erase_val(v)<<endl;
     // regex digit("(\\+|-)?[[:digit:]]+");
     // regex decimal("((\\+|-)?([[:digit:]]+)?)(\\.(([[:digit:]]+)))?");
     // regex exponent ("(((\\+|-)?(([[:digit:]]+)|((([[:digit:]]+)?)(\\.(([[:digit:]]+)))))))((e)((\\+|-)?)[[:digit:]]+)?");
