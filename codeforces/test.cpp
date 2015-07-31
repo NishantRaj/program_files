@@ -745,18 +745,110 @@ bool braces(string A){
     }
     return false;
 }
+string file_path(string A){
+    stack<char> s;
+    s.push('/');
+    for(int i = 0 ; i < A.length() ; i++){
+        if(!s.empty() && A[i] == '/'){
+            char a = 0 , b = 0;
+            if(!s.empty() && s.top() == '/')
+                s.pop();
+            if(!s.empty() && s.top() == '.'){
+                a = '.';
+                s.pop();
+            }
+            if(!s.empty() && s.top() == '.'){
+                b = '.';
+                s.pop();
+            }
+            if(a == '.' &&  b == '.'){
+                if(!s.empty() && s.top() == '/')
+                    s.pop();
+                while(!s.empty() && s.top() != '/')
+                    s.pop();
+                if(!s.empty()) s.pop();
+            } else if( a == '.'){
+                if(!s.empty() && s.top() == '/')
+                    s.pop();
+            }
+            s.push(A[i]);
+        }
+        else s.push(A[i]);
+    }
+    string ans="";
+    while(!s.empty()){
+        ans = s.top() + ans;
+        s.pop();
+    }
+    if(ans.size() > 0 && ans[ans.size() -1] == '/')
+        return ans.substr(0 , ans.size()-1);
+    return ans;
+}
+int sol(vector<int> A){
+    stack<int>s;
+    int start = 0 , ans = 0;
+    while(start < A.size() && A[start] == 0)
+        start++;
+    while(start < A.size()){
+        // cout<<start<<endl;
+        if(s.empty() || A[start]< A[s.top()])
+            s.push(start++);
+        else{
+            int pos = s.top();
+            s.pop();
+            if(!s.empty())
+                ans += (start - s.top() -1)*(min(A[start] , A[s.top()]) - A[pos]);
+            cout<<ans<<" "<<start<<endl;
+        }
+        // cout<<start<<endl;
+    }
+    return ans;
+}
+std::vector<int> sliding_max(vector<int> A , int B){
+    vector<int> ans;
+    if(B >= A.size())
+    {
+        ans.push_back(*max_element(A.begin() , A.end()));
+        return ans;
+    }
+    stack<int>s;
+    for(int i = 0 ; i < B ; i++){
+        while(!s.empty() && A[s.top()] < A[i])
+            s.pop();
+        if(s.empty() || A[i] >= A[s.top()])
+        s.push(i);
+    }
+    for(int i = B ; i<A.size() ; i++){
+        ans.push_back(A[s.top()]);
+        while(!s.empty() && A[s.top()] < A[i])
+            s.pop();
+        while(!s.empty() && s.top() <= i - B)
+            s.pop();
+        if(s.empty() || A[s.top()] <= A[i])
+            s.push(i);
+    }
+    if(!s.empty())
+        ans.push_back(A[s.top()]);
+    return ans;
+
+}
 int main(){
-    // int n;
-    // cin>>n;
-    // std::vector<int> A;
+    int n , w;
+    std::vector<int> A;
     string s;
-    cin>>s;
-    cout<<braces(s)<<endl;
-    // for(int i = 0 ; i < n ; i++){
-    //     int temp;
-    //     cin>>temp;
-    //     A.push_back(temp);
-    // }
+    cin>>n>>w;
+    // getline(cin , s);
+    // cout<<file_path(s)<<endl;
+    for(int i = 0 ; i < n ; i++){
+        int temp;
+        cin>>temp;
+        A.push_back(temp);
+    }
+    vector<int> j = sliding_max(A , w);
+    for(auto i : j){
+        cout<<i<<" ";
+    }
+    cout<<endl;
     // int i = 0 , k =0 , min = INT_MAX;
     // long long ans = 0;
     // for(i = 0 ; i <A.size() ; ){
