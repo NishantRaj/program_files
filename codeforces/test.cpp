@@ -832,23 +832,73 @@ std::vector<int> sliding_max(vector<int> A , int B){
     return ans;
 
 }
+bool compare_(vector<int> a , vector<int> b){
+    bool flag = 1;
+    for(int i = 0;  i< 75 ; i++){
+        if(a[i] < b[i]){
+            flag = 0;
+            break;
+        }
+    }
+    return flag;
+}
+string minWindow(string S, string T) {
+    // Do not write main() function.
+    // Do not read input, instead use the arguments to the function.
+    // Do not print the output, instead return values as specified
+    // Still have a doubt. Checkout www.interviewbit.com/pages/sample_codes/ for more details
+    vector<int> val(75) , cal(75);
+    for(int i = 0 ; i < T.size() ; i++)
+        val[T[i]-48]++;
+    // for(int k = 0 ; k < 75 ; k++)
+    //         cout<<val[k]<<" ";
+    //     cout<<endl<<endl;
+    int i = 0 , j = 0;
+    pair<long long , long long> pii;
+    pii = make_pair(INT_MIN , INT_MAX);
+    while(j < S.size()){
+        cal[S[j]-48]++;
+        // for(int k = 0 ; k < 75 ; k++)
+        //     cout<<cal[k]<<" ";
+        // cout<<endl<<endl;
+        while(i <= j && compare_(cal , val)){
+            //cout<<"c = "<<compare_(cal , val)<<endl;
+            if(pii.second - pii.first + 1 > (long long)(j-i+1))
+                pii = make_pair(i , j);
+            cal[S[i] - 48]--;
+            i++;
+        }
+        j++;
+    }
+    string ans="";
+    if(pii.first != INT_MIN && pii.second!= INT_MAX)
+        for(int i = pii.first;i<=pii.second ; i++)
+            ans = ans + S[i];
+    return ans;
+}
 int main(){
-    int n , w;
-    std::vector<int> A;
-    string s;
-    cin>>n>>w;
+    // int n , w;
+    // std::vector<int> A;
+    // string s , t;
+    // cin>>s>>t;
+    double temp;
+    cin>>temp;
+    // ostringstream d;
+    // d<<temp;
+    cout<<to_string(temp)<<endl;
+    // cout<<minWindow(s , t)<<endl;
     // getline(cin , s);
     // cout<<file_path(s)<<endl;
-    for(int i = 0 ; i < n ; i++){
-        int temp;
-        cin>>temp;
-        A.push_back(temp);
-    }
-    vector<int> j = sliding_max(A , w);
-    for(auto i : j){
-        cout<<i<<" ";
-    }
-    cout<<endl;
+    // for(int i = 0 ; i < n ; i++){
+    //     int temp;
+    //     cin>>temp;
+    //     A.push_back(temp);
+    // }
+    // vector<int> j = sliding_max(A , w);
+    // for(auto i : j){
+    //     cout<<i<<" ";
+    // }
+    // cout<<endl;
     // int i = 0 , k =0 , min = INT_MAX;
     // long long ans = 0;
     // for(i = 0 ; i <A.size() ; ){
