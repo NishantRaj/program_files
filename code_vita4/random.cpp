@@ -9,7 +9,9 @@ long long irand(long long min, long long max) {
 int main()
 {
 	for(int i = 0 ; i < 500000 ; i++){
-		cout<<irand(65 , 90)<<irand(97 , 122);
+		char a = (int)irand(65 , 90);
+		char s = (int)irand(97 , 122);
+		cout<<a<<s;
 	}
 	return 0;
 }

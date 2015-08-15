@@ -1,3 +1,4 @@
+//http://www.ebay.in/sch/i.html?_from=R40&_trksid=p2050601.m570.l1311.R1.TR7.TRC1.A0.H0.Xswitching+regula.TRS0&_nkw=switching+regulator&_sacat=0 -> for voltage regulator
 //compatible with arduino compiler
 #include <SoftwareSerial.h>
 SoftwareSerial gprsSerial(2, 3);
