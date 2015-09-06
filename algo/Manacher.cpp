@@ -30,6 +30,7 @@ string longest_palindromic_substring(string s){
 
 		if(max_len < arr[i]) max_len = arr[i] , pos = i;
 	}
+	delete[] arr;
 	return s.substr((pos - 1 - max_len)/2 ,max_len); 
 }
 int main(){

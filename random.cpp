@@ -8,8 +8,15 @@ long long irand(long long min, long long max) {
 }
 int main()
 {
-	for(int i = 0 ; i < 500000 ; i++){
-		cout<<irand(65 , 90)<<irand(97 , 122);
+	cout<<100<<endl;
+	for(int i = 0 ; i < 100 ; i++){
+		cout<<1000<<" "<<100<<endl;
+		for(int i = 0 ; i< 100 ; i++)
+			cout<<irand(1 , 1000000000)<<" ";
+		cout<<endl;
+		for(int i = 0 ;i < 100 ;i++){
+			cout<<irand(0 , 100)<<" "<<irand(0 , 100)<<endl;
+		}
 	}
 	return 0;
 }
