@@ -87,10 +87,9 @@ int infixtoPostfix(char* exp)
 		}
 		while(!isEmpty(stack))
 			exp[++k]=pop(stack);
-		cout<<exp<<endl;
 	}
 	exp[++k]='\0';
-	
+	cout<<exp<<endl;
 }
 int main()
 {

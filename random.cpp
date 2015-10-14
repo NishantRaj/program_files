@@ -8,14 +8,16 @@ long long irand(long long min, long long max) {
 }
 int main()
 {
-	cout<<100<<endl;
-	for(int i = 0 ; i < 100 ; i++){
-		cout<<1000<<" "<<100<<endl;
-		for(int i = 0 ; i< 100 ; i++)
+	cout<<20<<endl;
+	for(int i = 0 ; i < 20 ; i++){
+		cout<<10000<<endl;
+		for(int j = 0 ; j < 10000 ; j++)
 			cout<<irand(1 , 1000000000)<<" ";
-		cout<<endl;
-		for(int i = 0 ;i < 100 ;i++){
-			cout<<irand(0 , 100)<<" "<<irand(0 , 100)<<endl;
+		cout<<endl<<10000<<endl;
+		for(int j = 0 ; j < 10000 ; j++){
+			int x = irand(1 , 1000);
+			int y = irand(x , 1000);
+			cout<<x<<" "<<y<<endl;
 		}
 	}
 	return 0;
