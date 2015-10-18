@@ -4,33 +4,83 @@ using namespace std;
 int k;
 struct node
 {
-	int result,lazy,child;
-	int pre,suf,sum;
-	void split(node &a , node &b)
-	{
-		/*a.val+=lazy*a.child , a.lazy += lazy;
-		b.val+=lazy*b.child, b.lazy += lazy;
-		lazy = 0;*/
+	vector<int> arr;
+	long long ans;
+	void merge(node &a , node &b){
+		int x , y;
+		x = a.arr.size() , y = b.arr.size();
+		arr.clear();
+		int i = 0 , j = 0;
+		ans = 0;
+		long long k = 1;
+		while(i < x && j < y){
+			if(a.arr[i] < b.arr[j]){
+				if(arr.size() > 0 && arr[arr.size() -1] != a.arr[i]){
+					arr.push_back(a.arr[i]);
+					ans = ans + k*a.arr[i];
+					k++;
+				} else if(arr.size() == 0){
+					arr.push_back(a.arr[i]);
+					ans = ans + k*a.arr[i];
+					k++;
+				}
+				i++;
+			} else{
+				if(arr.size() > 0 && arr[arr.size() -1] != b.arr[j]){
+					arr.push_back(b.arr[j]);
+					ans = ans + k*b.arr[j];
+					k++;
+				} else if(arr.size() == 0){
+					arr.push_back(b.arr[j]);
+					ans = ans + k*b.arr[j];
+					k++;
+				}
+				j++;
+			}
+		}
+		while(i < x){
+			if(arr.size() > 0 && arr[arr.size()-1] != a.arr[i]){
+				arr.push_back(a.arr[i]);
+				ans = ans + k*a.arr[i];
+				k++;
+			}
+			else if(arr.size() == 0){
+				arr.push_back(a.arr[i]);
+				ans = ans + k*a.arr[i];
+				k++;
+			}
+			i++;
+		}
+		while(j < y ){
+			if(arr.size() > 0 && arr[arr.size()-1] != b.arr[j]){
+				arr.push_back(b.arr[j]);
+				ans = ans + k*b.arr[j];
+				k++;
+			}
+			else if(arr.size() == 0){
+				arr.push_back(b.arr[j]);
+				ans = ans + k*b.arr[j];
+				k++;
+			}
+			j++;
+		}
+		// for(int i = 0 ;  i < arr.size() ; i++){
+		// 	ans = ans + (ll)arr[i]*(i+1);
+		// }
 	}
-	void merge(node a , node b)
-	{
-		//val = a.val + b.val ;
-		//child = a.child + b.child;
-		//lazy = 0;
-		sum = a.sum + b.sum;
-		pre = max(a.pre , (a.sum + b.pre));
-		suf = max(b.suf , (b.sum + a.suf));
-		result = max(a.suf + b.pre,max(a.result , b.result));
+	void split(node &a , node &b){
 	}
-	node()
-	{
-		result = pre = suf = sum = INT;
+	void update(node &a){
 	}
-	node(int temp)
-	{
-		result = pre = suf = sum = temp;
+	node(){
+		arr.clear();
+		ans = 0;
 	}
-}tree[131080];
+	node(int a){ 
+		ans = a;
+		arr.push_back(a);
+	}
+};
 
 void initalize()
 {

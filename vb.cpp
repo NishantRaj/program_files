@@ -1,40 +1,8 @@
-/*
-===================================================
-Name :- Nishant Raj
-Email :- raj.nishant360@gmail.com
-College :- Indian School of Mines
-Branch :- Computer Science and Engineering
-Time :- 17 October 2015 (Saturday) 18:16
-===================================================*/
 #include <bits/stdc++.h>
 using namespace std;
 #define pb push_back
 #define pll pair < long long , long long >
 #define ll long long
-#define gc getchar_unlocked
-void scanint(int &x)
-{
-    register int c = gc();
-    x = 0;
-    int neg = 0;
-    for(;((c<48 || c>57) && c != '-');c = gc());
-    if(c=='-') {neg=1;c=gc();}
-    for(;c>47 && c<58;c = gc()) {x = (x<<1) + (x<<3) + c - 48;}
-    if(neg) x=-x;
-}
-void pr_uint(unsigned long long  n) {
-    if (n / 10 != 0)
-        pr_uint(n / 10);
-    putchar_unlocked((n % 10) + '0');
-}
-
-void pr_int(long long n) {
-    if (n < 0) {
-        putchar_unlocked('-');
-        n = -n;
-    }
-    pr_uint((unsigned long long) n);
-}
 long long orientation(pll P,pll Q,pll R){
     return  (Q.first-P.first)*(R.second-P.second)-(R.first-P.first)*(Q.second-P.second);
 }
@@ -66,31 +34,45 @@ long long Dist(pll P ,pll Q){
 int main()
 {
     int t;
-    scanint(t);
+    scanf("%d",&t);
     while(t--)
     {
         vector<pll >v,u,l;
         int n;
-        scanint(n);
+        scanf("%d",&n);
         int k1;
         for(int i=0;i<n;i++){
-            scanint(k1);
+            scanf("%d",&k1);
             v.push_back(make_pair(i+1,k1));
         }
         if(n==1){
             printf("0\n");
             continue;
         }
-        convex_hull(v,l,u);//conpute convex hull for set of points .
+        convex_hull(v,l,u);
         int i = 0 , j = l.size() -1;
         ll ans = 0;
-        l.insert(l.end() , u.begin() , u.end());
-        for(int i = 0 ; i < l.size() ; i++){ // Brute Force to find points having maximum distance.
-        	for(int j = 0 ; j < l.size() ; j++){
-        		ans = max(ans , Dist(l[i] , l[j]));
-        	}
+        while( i < u.size()-1 || j > 0){
+            ans = max(ans , Dist(u[i] , l[j]));
+            if( i == u.size()-1)
+                j--;
+            else if( j == 0 )
+                i++;
+            else if(slope_compare(u[i] , u[i+1] , l[j-1] , l[j]))
+                i++;
+            else
+                j--;
         }
-        pr_int(ans);
-        putchar_unlocked('\n');
+        for(int i = 0 ; i < u.size() ; i++){
+            for(int j =i + 1 ; j<u.size() ; j++){
+                ans = max(ans , Dist(u[i] , u[j]));
+            }
+        }
+        for(int i = 0 ; i < l.size() ; i++){
+            for(int j =i + 1 ; j<l.size() ; j++){
+                ans = max(ans , Dist(l[i] , l[j]));
+            }
+        }
+        printf("%lld\n", ans);
     }
 }
