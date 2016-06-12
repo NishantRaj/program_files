@@ -43,7 +43,7 @@ public:
 		}
 	}
 
-	T rangeMin(int i , int j){
+	T rangeMin(int s , int e){
 		int k=e-s;
 	    k=31-__builtin_clz(k+1); // k = log(e-s+1)
 	    if( container[pre[s][k]] <= container[pre[e-(1<<k)+1][k]] )

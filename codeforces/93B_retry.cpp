@@ -83,47 +83,43 @@ void lcpArray(char str[] , int n)
         lcp[rank[pos][i] + 1] = k;
     }
 }
-bool check(int n , int len)
+int lcp_(int i, int j , int n ){
+    int ans = 0;
+    int log_n = ceil(log(n) / log(2));
+    for (int k=log_n; k>=0; --k)
+        if (rank[k][i] == rank[k][j]) {
+            ans += 1<<k;
+            i += 1<<k;
+            j += 1<<k;
+        }
+    return ans;
+}
+int check(int n , char s[])
 {
     bool flag[3];
-    flag[1] = flag[2] = flag[3] = false;
+    flag[0] = flag[1] = flag[2] = false;
+    int ans = -1*INT_MAX;
     for(int i = 2 ; i < n ; i++)
     {
-        if(lcp[i] >= len){
-            if(SA[i] == 0 || SA[i-1] ==0 || SA[i-2]==0)
-                flag[0] = true;
-            if(SA[i] == n - len || SA[i-1] == n-len || SA[i-2]==n-len)
-                flag[2] = true;
-            if((SA[i] != 0 && SA[i] != n-len ) || (SA[i-1] != 0 && SA[i-1] != n-len ) || (SA[i-2] != 0 && SA[i-2] != n-len ))
-                flag[1] = true;
-            if( flag[0] && flag[1] && flag[2])
-                return true;
+        int min_len = min(n-SA[i] , min(n-SA[i-1] , n-SA[i-2]));
+        if(SA[i] == 0 || SA[i-1] ==0 || SA[i-2]==0)
+            flag[0] = true;
+        if((SA[i] != 0 && SA[i] != n - min_len) || (SA[i-1] != 0 && SA[i-1] != n-min_len ) || (SA[i-2] != 0 && SA[i-2] != n-min_len))
+            flag[1] = true;
+        if( flag[0] && flag[1]){
+            int min_lcp = min(lcp[i-1] , lcp[i]);
+            // cout<<i<<" "<<SA[i]<<" "<<min_len<<" "<<min_lcp<<endl;
+            if(min_lcp == min_len){
+                ans = max(ans , min_len);
+            } else {
+                int a = lcp_(n - min_lcp , SA[i] , n);
+                // cout<<n-min_lcp<<" "<<a<<" "<<b<<" "<<c<<endl;
+                if(a==min_lcp)
+                    ans = max(ans , min_lcp);
+            }
+            flag[0] = flag[1] = false;
         }
-        else
-        {
-            if( flag[0] && flag[1] && flag[2])
-                return true;
-            else
-                flag[0] = flag[1] = flag[2] = false;
-        }
-    }
-    return false;
-}
-int binary_search(int n)
-{
-    int low = 0 , high = n - 1 , mid , ans = -1;
-    // fflush(stdin);
-    while( low < high)
-    {
-        mid = (low + high)/2;
-        if(check(n , mid))
-        {
-            low = mid + 1 ; 
-            ans = max(ans , mid);
-        }
-        else
-            high = mid;
-        fflush(stdin);
+        flag[0]=flag[1]=false;
     }
     return ans;
 }
@@ -135,17 +131,17 @@ int main()
     suffixArray(s , n );
     lcpArray(s , n);
     // cout<<check(n , 6)<<endl;
-    // for(int i = 0 ; i<n ; i++)
-    // {
-    //     for(int j = SA[i];j<n;j++)
-    //         cout<<s[j];
-    //     cout<<" "<<SA[i];
-    //     cout<<endl;
-    // }
-    // for(int i = 0 ;i<n ; i++)
-    //     cout<<lcp[i]<<endl;
-    int res = binary_search(n);
-    if(res == -1)
+    for(int i = 0 ; i<n ; i++)
+    {
+        for(int j = SA[i];j<n;j++)
+            cout<<s[j];
+        cout<<" "<<SA[i];
+        cout<<endl;
+    }
+    for(int i = 0 ;i<n ; i++)
+        cout<<lcp[i]<<endl;
+    int res = check(n , s);
+    if(res == -1*INT_MAX || res==0)
         cout<<"Just a legend\n";
     else{
         for(int i = 0 ; i < res ; i++)

@@ -1,73 +1,48 @@
-/***
-You have k lists of sorted integers. Find the smallest range that includes at least one number from each of the k lists. 
-
-For example, 
-List 1: [4, 10, 15, 24, 26] 
-List 2: [0, 9, 12, 20] 
-List 3: [5, 18, 22, 30] 
-
-The smallest range here would be [20, 24] as it contains 24 from list 1, 20 from list 2, and 22 from list 3.
-***/
 #include <bits/stdc++.h>
 using namespace std;
-int k;
-int binary_search(vector<pair<int , int > > &v , bool check[],int start ,int &range){
-    int low = start, high = v.size(), mid;
-    range = INT_MAX;
-    int ans = INT_MAX;
-    while(low < high){
-        mid = (low + high)/2;
-        int count = 0;
-        memset(check , 0 , sizeof check);
-        for(int i = 0 ; i < v.size() ; i++){
-              if(v[i].first >= v[start].first && v[i].first <= v[mid].first && check[v[i].second]==false ){
-                  count++;
-                  check[v[i].second] = true;
-              }
-        }
-        if(count >= k){
-            high = mid;
-            range = min(mid - start , range);
-            ans = min(ans , mid);
-        } else {
-            low = mid+1;
-        }
-    }
-    return ans;
+int a[100009][501];
+class data{
+	int l , r , v;
+	data(){
+		l = r = 100002;
+		v = 99999999;
+	}
+	data(int left , int right , int val){
+		l = left , r = right , v = value;
+	}
+};
+bool cmp(const data &a , const data &b){
+	return a.l==b.l ? a.r < a.r : a.l < b.l;
+}
+int whichCase(int l , int r , int p , int q){
+	if((p>= l && q<=r) || p == r)
+		return 0;
+	if(p>l && p<r)
+		return 1;
+	if( p >= r)
 }
 int main(){
-    vector<pair<int , int> > v;
-    cin>>k;
-    vector<int> list[10];
-    int n;
-    for(int i = 0 ; i < k ; i++){
-        cin>>n;
-        for(int j = 0 ; j < n ; j++){
-            int temp;
-            cin>>temp;
-            list[i].push_back(temp);
-        }
-    }
-    bool check[k];
-    memset(check , 0 , sizeof check);
-    for(int i = 0 ; i < k ; i++){
-        for(int j = 0 ; j < list[i].size() ; j++){
-            v.push_back(make_pair(list[i][j] , i));
-        }
-    }
-    sort(v.begin() , v.end());
-    int range = INT_MAX ;
-    long long final_ans = INT_MAX;
-    pair<int , int> pii;
-    for(int i = 0 ; i < v.size() ; i++){
-        range = INT_MAX ;
-        memset(check , 0 , sizeof check);
-        int ans = binary_search(v ,check , i , range);
-        if(range < final_ans){
-            pii = make_pair(v[i].first , v[ans].first);
-        }
-    }
-    cout<<pii.first<<" "<<pii.second<<endl;
-    return 0;
-    
+	int n , maxN;
+	cin>>n>>maxN;
+	data arr[n+9];
+	for(int i = 0 ; i < n ; i++){
+		int l , r , v;
+		cin>>l>>r>>v;
+		arr[i] = data(l , r , v);
+	}
+	sort(arr , arr+n , cmp);
+	int result_array[100009];
+	for(int i = arr[0].l , j =0; i<=maxN || j<n ;){
+		int start = i , end = min(arr[j].r , arr[j+1].r);
+		if(arr[j+1].l > arr[j].r){
+			end+=1;
+		}
+		for(int k = start ; k<end ; k++)
+			result_array[k] = arr[j].v;
+		start = arr[j+1].l;
+		end = min(arr[j].r , arr[j+1].r);
+		for(int k = start ; k<= end ; k++)
+			result_array[k] = min(arr[j].v , arr[j+1].val);
+		
+	}
 }
